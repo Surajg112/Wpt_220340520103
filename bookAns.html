@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Answer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <script>
+        $(document).ready(() => {
+            console.log("page is loaded");
+            $('#bookid').blur(() => {
+                console.log("blur event occured");
+                let input = { bookid: $(bookid).val }
+
+                let parameteroffunction = {
+                    data: input,
+                    url: 'http://localhost:444/getbookname',
+                    // url: 'http://localhost:444/getprice',
+
+                    type: 'get',
+                    datatype: 'json',
+                    success: function (datafromserver) {
+                        console.log("Data is fetching perfectly");
+                        console.log(datafromserver);
+                        console.log("bookid is found");
+                        if (datafromserver.status === true) {
+                            $('#bookname').val(datafromserver.detail.bookname);
+                            $('#price').val(datafromserver.detail.price);
+                            $('#msg').text("bookid not found");
+                        }
+                    },
+                    error: function (errorfromserver) {
+                        console.log("some type of error happened" + errorfromserver);
+                    }
+                }
+                $.ajax(parameteroffunction);
+            });
+            $('#update').click(() => {
+                console.log("update button is clicked");
+
+                let input = { bookid: $('#bookid').val(), bookname: $('#bookname').val(), price: $('#price').val() }
+                let parameteroffunction = {
+                    data: input,
+                    url: 'http://localhost:444/updateprice',
+                    type: 'get',
+                    datatype: 'json',
+                    success: function (datafromserver) {
+                        console.log("Data is fetching perfectly");
+                        console.log(datafromserver);
+                        if (datafromserver.status === true) {
+                            $('#msg').text("price is updated");
+                        }
+                        else {
+                            $('#price').val("");
+                            $('#msg').text("price is not updated");
+                        }
+                    },
+                    error: function (errorfromserver) {
+                        console.log("some type of error happened" + errorfromserver);
+                    }
+                }
+                $.ajax(parameteroffunction);
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+        book id <input type="number" id="bookid"> message(what happened book added or not)
+        <br><br>
+        book name <input type="text" id="bookname">
+        <br><br>
+        price <input type="number" id="price">
+        <br><br>
+        <input type="button" name="update book" value="update" id="update">
+        <span id="msg"></span>
+    </div>
+</body>
+
+</html>
